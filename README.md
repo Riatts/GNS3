@@ -5,7 +5,6 @@ This repository documents my hands-on networking and IT labs as I transition int
 
 ## Current Hardware
 - Linux Mint Laptop - Where most of the GNS3 work is done
-- Windows 11 Desktop
 
 ## Goals
 - Learn VLAN configuration
