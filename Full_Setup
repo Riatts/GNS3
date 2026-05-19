@@ -1,0 +1,27 @@
+1.  SW1 and SW2 should be on one VLAN connecting the Ethernet interfaces of R3 and R4
+
+SW1 and SW2 should be setup with multiple ethernet links to create a single bonded interface.  The default settings can be used for the bonded interface.
+
+2.  Configure OSPF on all routers in the network. 
+
+OSPF AREA 0 should ONLY be on R3 and R4
+R1, R2, R5 and R6 should all be in different OSPF AREAS {1, 2, 5, and 6} respectively.
+Configure area 5 on R5 as a stub area
+
+3.  All IPv4 CIDR blocks must be visible from every router, no summary routes except area 5.
+
+4.  IP Addressing as follows
+
+R1 to R3 - IPv4: 13.13.13.0/30 , (Serial)
+R2 to R3 - IPv4: 23.23.23.0/30 , (Serial)
+R5 to R4 - IPv4: 54.54.54.0/30 , (Serial)
+R6 to R4 - IPv4: 64.64.64.0/30 , (Serial)
+VLAN     - IPv4: 34.34.34.0/24 , (Ethernet)
+All routers to have a configured loopback address.  Use the number of the router to determine the address (for example, R1 should be 1.1.1.1).  Use a submit mask of /32 for all loopback interfaces.
+
+5. Configure RIPv2 on R2 on an additional Loopback address using the 222.222.222.0/25 network.  Inject RIP into OSPF so every OSPF router in network will add the loopback subnet into their routing table.
+
+6. Add R7 and configure eBGP to R3 (you may need to add an additional serial link).  R3 should be in AS 333, R7 should be in AS 777.  Advertise ONLY network 13.13.13.0/30 from AS 333 to AS 777.
+
+
+7. Configure another router (R8) off R1, R2, R5 or R6 as Area 88.  Create a virtual link to allow Area 88 into the OSPF network.
