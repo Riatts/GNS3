@@ -1,0 +1,341 @@
+Here I added 10 routers and committed them to areas following OSPF, BGP and RIP protocols programing them to be able to communicate with each other.
+
+!	!!!!!!!!!BGP CONFIG!!!!!!!!!!!!!
+!R1
+config t
+!
+interface Loopback0
+ ip address 1.1.1.1 255.255.255.0
+!
+interface Loopback1
+ ip address 111.111.111.1 255.255.255.240
+!
+interface FastEthernet0/0
+ ip address 11.11.11.1 255.255.255.0
+ duplex auto
+ speed auto
+!
+interface Serial0/0
+ ip address 12.12.12.1 255.255.255.240
+ clock rate 2000000
+!
+interface FastEthernet0/1
+ no ip address
+ shutdown
+ duplex auto
+ speed auto
+!
+interface Serial0/1
+ ip address 13.13.13.1 255.255.255.240
+ clock rate 2000000
+!
+interface Serial0/2
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/3
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/4
+ no ip address
+ shutdown
+ clock rate 2000000
+!
+interface Serial0/5
+ ip address 15.15.15.1 255.255.255.240
+ clock rate 2000000
+!
+!
+router bgp 100
+ no synchronization
+ bgp log-neighbor-changes
+ network 1.1.1.0 mask 255.255.255.0
+ network 11.11.11.0 mask 255.255.255.0
+ network 111.111.111.0 mask 255.255.255.240
+ neighbor 12.12.12.2 remote-as 200
+ neighbor 13.13.13.3 remote-as 100
+ neighbor 15.15.15.5 remote-as 56
+ no auto-summary
+!
+!
+router rip
+  version 2
+  no auto-summary
+  network 12.12.12.1 
+  network 13.13.13.1
+  network 11.11.11.1
+  network 15.15.15.1
+!
+end
+wr
+
+------------------------------------------------
+
+------------------------------------------------
+!R2
+config t
+interface loop0
+  ip address 2.2.2.2 255.255.255.0
+!
+interface fa0/0
+  no shutdown
+  ip address 22.22.22.2 255.255.255.0
+interface s0/0
+  no shutdown
+  ip address 12.12.12.2 255.255.255.240
+interface s0/1
+  no shutdown
+  ip address 26.26.26.2 255.255.255.240
+interface s0/2
+  no shutdown
+  ip address 27.27.27.2 255.255.255.240
+!
+router bgp 200
+  no auto-summary
+  no synchronization 
+  neighbor 12.12.12.1 remote-as 100
+  neighbor 26.26.26.6 remote-as 56
+  neighbor 27.27.27.7 remote-as 789
+  network 2.2.2.0 mask 255.255.255.0
+  network 22.22.22.0 mask 255.255.255.0
+end
+wr  
+  
+  ------------------------------------------------------
+  
+!R3
+config t
+interface loopback0
+  no ip address
+!
+interface s0/1
+  no shutdown
+  ip address 13.13.13.3 255.255.255.240
+interface s0/2
+  no shutdown
+  ip address 34.34.34.3 255.255.255.240
+!
+interface loop0
+  ip address 3.3.3.3 255.255.255.0
+router bgp 100
+  no auto-summary
+  no synchronization 
+  neighbor 13.13.13.1 remote-as 100
+  neighbor 34.34.34.4 remote-as 400
+  network 3.3.3.0 mask 255.255.255.0
+ 
+end
+wr   
+  -----------------------------------------------------------
+!R4
+config t
+interface loop0
+  ip address 4.4.4.4 255.255.255.0
+!
+interface s0/3
+  no shutdown
+  ip address 45.45.45.4 255.255.255.240
+interface s0/2
+  no shutdown
+  ip address 34.34.34.4 255.255.255.240
+!
+router bgp 400
+  no auto-summary
+  no synchronization 
+  neighbor 45.45.45.5 remote-as 56
+  neighbor 34.34.34.3 remote-as 100
+  network 4.4.4.0 mask 255.255.255.0
+end
+wr   
+---------------------------------------------------------------
+!R5
+config t
+interface loop0
+  ip address 5.5.5.5 255.255.255.0
+!
+interface s0/3
+  no shutdown
+  ip address 45.45.45.5 255.255.255.240
+interface s0/5
+  no shutdown
+  ip address 15.15.15.5 255.255.255.240
+interface s0/0
+  no shutdown
+  ip address 56.56.56.5 255.255.255.240
+!
+router bgp 56
+  no auto-summary
+  no synchronization 
+  neighbor 45.45.45.4 remote-as 400
+  neighbor 15.15.15.1 remote-as 100
+  neighbor 56.56.56.6 remote-as 56
+  network 5.5.5.0 mask 255.255.255.0
+end
+wr 
+  ----------------------------------------------
+!R6
+config t
+interface loop0
+  ip address 6.6.6.6 255.255.255.0
+!
+interface s0/0
+  no shutdown
+  ip address 56.56.56.6 255.255.255.240
+interface s0/1
+  no shutdown
+  ip address 26.26.26.6 255.255.255.240
+!
+router bgp 56
+  no auto-summary
+  no synchronization 
+  neighbor 56.56.56.5 remote-as 56
+  neighbor 26.26.26.2 remote-as 200
+  network 6.6.6.6 mask 255.255.255.0
+end
+wr
+  
+---------------------------------------------------------
+!R7
+config t
+!
+interface Loopback0
+ ip address 7.7.7.7 255.255.255.0
+!
+interface Serial0/0
+ no shutdown
+ ip address 27.27.27.7 255.255.255.240
+!
+interface Serial0/1
+ ip address 78.78.78.7 255.255.255.240
+ clock rate 2000000
+ no shutdown
+!
+router bgp 789
+ no synchronization
+ bgp log-neighbor-changes
+ network 7.7.7.0 mask 255.255.255.0
+ neighbor 78.78.78.8 remote-as 789
+ neighbor 27.27.27.2 remote-as 200
+ no auto-summary
+!
+end 
+wr
+!!_----------------------------------------------------------
+
+
+!R8
+config t
+!
+interface Loopback0
+ ip address 8.8.8.8 255.255.255.0
+!
+interface Serial0/0
+ no shutdown
+ ip address 89.89.89.8 255.255.255.240
+!
+interface Serial0/1
+ ip address 78.78.78.8 255.255.255.240
+ clock rate 2000000
+ no shutdown
+!
+router bgp 789
+ no synchronization
+ bgp log-neighbor-changes
+ network 8.8.8.0 mask 255.255.255.0
+ neighbor 78.78.78.7 remote-as 789
+ neighbor 89.89.89.9 remote-as 789
+ no auto-summary
+!
+end 
+wr
+!!----------------------------------------------------
+
+!R9
+config t
+!
+interface Loopback0
+ ip address 9.9.9.9 255.255.255.0
+!
+interface Serial0/0
+ ip address 89.89.89.9 255.255.255.240
+ clock rate 2000000
+ no shutdown
+!
+router bgp 789
+ no synchronization
+ bgp log-neighbor-changes
+ network 9.9.9.0 mask 255.255.255.0
+ neighbor 89.89.89.8 remote-as 789
+ no auto-summary
+!
+end
+wr
+!
+!!-------------------------------------------------
+!R10
+config t
+!!add loopbacks to osfp
+interface Loopback0
+ ip address 172.217.0.10 255.255.128.0
+ ip ospf 1 area 0
+!
+interface Loopback1
+ ip address 172.217.128.10 255.255.128.0
+ ip ospf 1 area 0
+!
+interface fa0/0
+ ip address 11.11.11.10 255.255.255.0
+ no shutdown
+ ip ospf 1 area 0
+end 
+wr
+!
+!R1
+config t 
+!
+interface fa0/0
+ ip ospf 1 area 0
+!
+router ospf 1
+!
+end
+wr
+
+!------------------------------------------------------------------
+
+
+!!!-----------------------------------------
+!! **Redistribution**
+R1#config t
+Enter configuration commands, one per line.  End with CNTL/Z.
+R1(config)#router bgp 100
+R1(config-router)#red
+R1(config-router)#redistribute ospf 1 metric ?
+  <0-4294967295>  Default metric
+
+R1(config-router)#redistribute ospf 1 metric 1
+
+
+
+!reflect route 
+neighbor 89.89.89.9 route-reflector-client 
+
+!force next hop
+neighbor 78.78.78.8 next-hop-self
+
+!see neighbor 
+show ip bgp summary
+!see bgp table 
+show ip bgp   
+!
+show ip bgp neighbors | inc BGP
+show ip bgp neighbor | inc BGP 
+  
+  
+  show ip bgp neighbor 13.13.13.3 advertised-routes
+  
+  
+  
